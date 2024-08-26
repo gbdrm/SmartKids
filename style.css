@@ -1,0 +1,52 @@
+body {
+            background-color: #f0f0f0;
+        }
+        .quest-image {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        #confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        #soundToggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #nextButton {
+            position: relative;
+            overflow: hidden;
+        }
+        #nextButtonProgress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: #007bff;
+            transition: width 3s linear;
+        }
+        #autoClickCountdown {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            text-align: left;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+        #puzzle {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
