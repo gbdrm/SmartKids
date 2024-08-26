@@ -3,6 +3,7 @@ let soundOn = true;
 let themePuzzles = [];
 window.nextButtonTimeout = null;
 window.countdownInterval = null;
+let enterPressed = false;
 
 const urlParams = new URLSearchParams(window.location.search);
 const selectedTheme = urlParams.get('theme');
@@ -15,11 +16,26 @@ if (selectedTheme && puzzles[selectedTheme]) {
     console.error("Selected theme not found in puzzles.");
 }
 
-document.getElementById("answer").addEventListener("keyup", function(event) {
+document.getElementById("answer").addEventListener("keydown", function(event) {
     if (event.key === "Enter" && !document.getElementById("answer").disabled) {
-        checkAnswer();
-    } else if (event.key === "Enter" && document.getElementById("nextQuestionButton").classList.contains("visible")) {
-        handleNextButtonClick();
+        event.preventDefault(); // Prevent the default action
+        if (!enterPressed) {
+            enterPressed = true; // Prevent multiple triggers
+            checkAnswer();
+            setTimeout(() => enterPressed = false, 300); // Reset after a short delay
+        }
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    const nextButton = document.getElementById("nextQuestionButton");
+    if (nextButton.classList.contains("visible") && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault(); // Prevent the default action
+        if (!enterPressed) {
+            enterPressed = true; // Prevent multiple triggers
+            handleNextButtonClick();
+            setTimeout(() => enterPressed = false, 300); // Reset after a short delay
+        }
     }
 });
 
@@ -32,6 +48,7 @@ function checkAnswer() {
         if (soundOn) document.getElementById("correctSound").play();
         document.getElementById("answer").disabled = true;  // Disable input to prevent double submission
         showNextQuestionButton();
+        document.getElementById("nextQuestionButton").focus();  // Focus on the "Next Question" button
         startAutoClickCountdown();
     } else {
         showFeedback(false, userAnswer);
