@@ -1,8 +1,7 @@
-
 let currentPuzzle = 0;
 let soundOn = true;
 let themePuzzles = [];
-window.nextButtonTimeout = null;  // Set these globally for accessibility
+window.nextButtonTimeout = null;
 window.countdownInterval = null;
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -19,6 +18,8 @@ if (selectedTheme && puzzles[selectedTheme]) {
 document.getElementById("answer").addEventListener("keyup", function(event) {
     if (event.key === "Enter" && !document.getElementById("answer").disabled) {
         checkAnswer();
+    } else if (event.key === "Enter" && document.getElementById("nextQuestionButton").classList.contains("visible")) {
+        handleNextButtonClick();
     }
 });
 
@@ -30,6 +31,7 @@ function checkAnswer() {
         showFeedback(true, userAnswer);
         if (soundOn) document.getElementById("correctSound").play();
         document.getElementById("answer").disabled = true;  // Disable input to prevent double submission
+        showNextQuestionButton();
         startAutoClickCountdown();
     } else {
         showFeedback(false, userAnswer);
@@ -37,26 +39,73 @@ function checkAnswer() {
     }
 }
 
+function showFeedback(isCorrect, userAnswer) {
+    clearTimeout(window.nextButtonTimeout);  // Clear any existing timer
+    clearInterval(window.countdownInterval); // Clear any existing interval
+
+    const feedbackSection = document.getElementById("feedbackSection");
+    const feedbackText = document.getElementById("feedbackText");
+    const userAnswerFeedback = document.getElementById("userAnswerFeedback");
+    const autoClickCountdown = document.getElementById("autoClickCountdown");
+
+    feedbackSection.classList.remove("d-none");
+
+    if (isCorrect) {
+        feedbackText.textContent = "Correct! Great job!";
+        userAnswerFeedback.textContent = `Your answer: ${userAnswer}`;
+        autoClickCountdown.textContent = `Auto-proceeding in 3 seconds...`;  // Start countdown only on correct answers
+    } else {
+        feedbackText.textContent = "Oops! Try again!";
+        userAnswerFeedback.textContent = `Your answer "${userAnswer}" was not correct.`;
+        autoClickCountdown.textContent = "";  // Clear any countdown text on incorrect answers
+    }
+}
+
 function startAutoClickCountdown() {
     const autoClickCountdown = document.getElementById("autoClickCountdown");
     let countdown = 3;
-    autoClickCountdown.textContent = `Auto-proceeding in ${countdown} seconds...`;
 
     window.countdownInterval = setInterval(() => {
         countdown--;
-        autoClickCountdown.textContent = `Auto-proceeding in ${countdown} seconds...`;
-        if (countdown === 0) {
+        if (countdown > 0) {
+            autoClickCountdown.textContent = `Auto-proceeding in ${countdown} seconds...`;
+        } else {
             clearInterval(window.countdownInterval);
         }
     }, 1000);
 
-    window.nextButtonTimeout = setTimeout(nextQuestion, 3000);
+    window.nextButtonTimeout = setTimeout(() => {
+        hideNextQuestionButton();
+        nextQuestion();
+    }, 3000);
 }
 
 function nextQuestion() {
     clearExistingTimers();
+    hideNextQuestionButton();
     currentPuzzle++;
     displayPuzzle(currentPuzzle, themePuzzles);
+}
+
+function showNextQuestionButton() {
+    const nextButton = document.getElementById("nextQuestionButton");
+    nextButton.classList.add("visible");
+    nextButton.classList.remove("d-none");
+
+    nextButton.addEventListener("click", handleNextButtonClick);
+}
+
+function handleNextButtonClick() {
+    clearTimeout(window.nextButtonTimeout);  // Clear the auto timeout to prevent double progression
+    hideNextQuestionButton();
+    nextQuestion();
+}
+
+function hideNextQuestionButton() {
+    const nextButton = document.getElementById("nextQuestionButton");
+    nextButton.classList.remove("visible");
+    nextButton.classList.add("d-none");
+    nextButton.removeEventListener("click", handleNextButtonClick);
 }
 
 function showHint() {
@@ -73,4 +122,9 @@ function toggleSound() {
     soundToggle.textContent = soundOn ? "Sound On" : "Sound Off";
     soundToggle.classList.toggle("btn-info");
     soundToggle.classList.toggle("btn-secondary");
+}
+
+function clearExistingTimers() {
+    clearTimeout(window.nextButtonTimeout);
+    clearInterval(window.countdownInterval);
 }
