@@ -29,7 +29,7 @@ document.getElementById("answer").addEventListener("keydown", function(event) {
 
 document.addEventListener("keydown", function(event) {
     const nextButton = document.getElementById("nextQuestionButton");
-    if (nextButton.classList.contains("visible") && (event.key === "Enter" || event.key === " ")) {
+    if (nextButton && nextButton.classList.contains("visible") && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault(); // Prevent the default action
         if (!enterPressed) {
             enterPressed = true; // Prevent multiple triggers
