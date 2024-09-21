@@ -1,4 +1,12 @@
 const puzzles = {
+    test: [
+        {
+            question: "1+1",
+            hint: "2",
+            answer: "2",
+            image: "https://picsum.photos/seed/two/200"
+        }
+    ],
     animals: [
         {
             question: "I am the king of the jungle. Who am I?",
