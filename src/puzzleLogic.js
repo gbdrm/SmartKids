@@ -1,5 +1,5 @@
 
-function displayPuzzle(currentPuzzle, themePuzzles) {
+export function displayPuzzle(currentPuzzle, themePuzzles) {
     if (currentPuzzle < themePuzzles.length) {
         document.getElementById("puzzle").textContent = themePuzzles[currentPuzzle].question;
         document.getElementById("questImage").src = themePuzzles[currentPuzzle].image;

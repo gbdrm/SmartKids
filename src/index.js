@@ -26,4 +26,4 @@ onAuthStateChanged(auth, user => {
     else {
         console.log("no user");
     }
-})
+});

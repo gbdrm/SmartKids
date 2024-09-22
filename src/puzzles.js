@@ -1,4 +1,4 @@
-const puzzles = {
+export const puzzles = {
     test: [
         {
             question: "1+1",
